@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "MemoryManagement.h"
 #include "Block.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 unsigned char* basePtr;
 unsigned char* limitPtr;
@@ -96,36 +96,35 @@ unsigned char* readMemory(unsigned char* ptr, unsigned char size) {
     unsigned char* blockPtr = GetCurrentBlockPtr(ptr);
     unsigned char* nextBlockPtr = GetNextBlockPtr(blockPtr);
     size = (size < nextBlockPtr - ptr) ? size : nextBlockPtr - ptr;
-	
-	unsigned char* arr = (unsigned char*)malloc(sizeof(unsigned char)*size);
-	for (int i = 0; i < size; i++) {
+
+    unsigned char* arr = (unsigned char*)malloc(sizeof(unsigned char) * size);
+    for (int i = 0; i < size; i++) {
         *(arr + i) = *(ptr + i);
     }
-	return arr;
+    return arr;
 }
 
 void writeMemory(unsigned char* ptr, unsigned char* buf, unsigned char size) {
-	if(size > 127) {
-		return;
-	}
-
-	unsigned char* blockPtr = GetCurrentBlockPtr(ptr);
-    unsigned char* nextBlockPtr = GetNextBlockPtr(blockPtr);
-	size = (size < nextBlockPtr - ptr) ? size : nextBlockPtr - ptr;
-	
-	for (int i = 0; i < size; i++) {
-        *(ptr + i) = *(buf +i);
+    if (size > 127) {
+        return;
     }
 
+    unsigned char* blockPtr = GetCurrentBlockPtr(ptr);
+    unsigned char* nextBlockPtr = GetNextBlockPtr(blockPtr);
+    size = (size < nextBlockPtr - ptr) ? size : nextBlockPtr - ptr;
+
+    for (int i = 0; i < size; i++) {
+        *(ptr + i) = *(buf + i);
+    }
 }
 
 void MemoryDump() {
-	printf("\n================ MEMORY DUMP ==================");
+    printf("\n================ MEMORY DUMP ==================");
 
-	int dataHeight = limitPtr - basePtr;
-	unsigned char size = 0;
+    int dataHeight = limitPtr - basePtr;
+    unsigned char size = 0;
     unsigned char sign = 0;
-	unsigned char usage = 0;
+    unsigned char usage = 0;
 
     for (int i = 0; i < dataHeight; i++, size--) {
         unsigned char* scanPtr = basePtr + i;
@@ -133,9 +132,9 @@ void MemoryDump() {
         if (size == 0) {
             size = GetBlockSize(scanPtr) + 1;
             sign = IsBlockSigned(scanPtr);
-			if( sign ) {
-				usage += size + 1;
-			}
+            if (sign) {
+                usage += size + 1;
+            }
         }
 
         if (i % 8 == 0) {
@@ -153,6 +152,6 @@ void MemoryDump() {
         }
     }
 
-	printf("\n\n");
-	printf("Usage %i/%i", usage, dataHeight);
+    printf("\n\n");
+    printf("Usage %i/%i", usage, dataHeight);
 }
